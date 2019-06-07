@@ -24,6 +24,7 @@ import com.graphhopper.reader.dem.ElevationProvider;
 import com.graphhopper.storage.GraphHopperStorage;
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.EdgeIteratorState;
+import com.graphhopper.util.Helper;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.GHPoint;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -89,6 +90,16 @@ public class OSMPostgisReader extends PostgisReader {
         return ret;
     }
 
+    private Coordinate roundCoordinate(Coordinate c){
+        c.x = Helper.round6(c.x);
+        c.y = Helper.round6(c.y);
+
+        if(!Double.isNaN(c.z))
+            throw new IllegalStateException("No z coordinate allowed!");
+
+        return c;
+    }
+
     @Override
     void processJunctions() {
         DataStore dataStore = null;
@@ -106,6 +117,7 @@ public class OSMPostgisReader extends PostgisReader {
                     tmpSet.clear();
                     for (int i = 0; i < points.length; i++) {
                         Coordinate c = points[i];
+                        c = roundCoordinate(c);
 
                         // don't add the same coord twice for the same edge - happens with bad geometry, i.e.
                         // duplicate coords or a road which forms a circle (e.g. roundabout)
@@ -171,6 +183,7 @@ public class OSMPostgisReader extends PostgisReader {
                     Coordinate startTowerPnt = null;
                     List<Coordinate> pillars = new ArrayList<Coordinate>();
                     for (Coordinate point : points) {
+                        point = roundCoordinate(point);
                         if (startTowerPnt == null) {
                             startTowerPnt = point;
                         } else {
