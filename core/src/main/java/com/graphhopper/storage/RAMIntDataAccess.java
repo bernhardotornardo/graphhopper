@@ -23,6 +23,9 @@ import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This is an in-memory data structure based on an integer array. With the possibility to be stored
  * on flush().
@@ -35,6 +38,7 @@ class RAMIntDataAccess extends AbstractDataAccess {
     private boolean closed = false;
     private boolean store;
     private transient int segmentSizeIntsPower;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     RAMIntDataAccess(String name, String location, boolean store, ByteOrder order) {
         super(name, location, order);
@@ -87,7 +91,7 @@ class RAMIntDataAccess extends AbstractDataAccess {
     @Override
     public boolean ensureCapacity(long bytes) {
         if (bytes < 0)
-            LoggerFactory.getLogger(getClass()).error("bytes less than 0:" + bytes);
+            logger.error("bytes less than 0:" + bytes);
             throw new IllegalArgumentException("new capacity has to be strictly positive");
 
         long cap = getCapacity();
