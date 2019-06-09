@@ -87,7 +87,7 @@ class RAMIntDataAccess extends AbstractDataAccess {
     @Override
     public boolean ensureCapacity(long bytes) {
         if (bytes < 0)
-            LoggerFactory.getLogger(getClass()).error(getName() + ", bytes less than 0:" + bytes);
+            LoggerFactory.getLogger(getClass()).error("bytes less than 0:" + bytes);
             throw new IllegalArgumentException("new capacity has to be strictly positive");
 
         long cap = getCapacity();
